@@ -1,0 +1,47 @@
+name: CI for Python Project
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Install dependencies (Make install)
+        run: make install
+
+      - name: 🧪 Run Tests with Pytest (Make test)
+        run: make test
+
+      - name: 🎨 Format Check with Black (Make format)
+        run: make format
+
+      - name: 🔍 Lint Code with Pylint (Make lint)
+        run: make lint
+
+      # 🔐 Hugging Face Authentication
+      - name: 🔐 Login to Hugging Face CLI
+        env:
+            HF: ${{secrets.HF}}
+        run: git remote add space https://huggingface.co/spaces/lotfi23/Demo1
+      - name: Push to hub
+        env:
+           HF: $${{secrets.HF}}
+        run: git push --force https://huggingface.co/spaces/lotfi23/Demo1
+           
+            
+          git add .
+          git commit -m "CI: Update model"
+          git push
