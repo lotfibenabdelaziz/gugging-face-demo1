@@ -31,17 +31,14 @@ jobs:
       - name: 🔍 Lint Code with Pylint (Make lint)
         run: make lint
 
-      # 🔐 Hugging Face Authentication
-      - name: 🔐 Login to Hugging Face CLI
+      # 🔐 Hugging Face Authentication and Push to Space
+      - name: 🔐 Login and Push to Hugging Face Space
         env:
-            HF: ${{secrets.HF}}
-        run: git remote add space https://huggingface.co/spaces/lotfi23/Demo1
-      - name: Push to hub
-        env:
-           HF: $${{secrets.HF}}
-        run: git push --force https://huggingface.co/spaces/lotfi23/Demo1
-           
-            
+          HF_TOKEN: ${{ secrets.HF }}
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+          git remote add space https://$HF_TOKEN@huggingface.co/spaces/lotfi23/Demo1
           git add .
-          git commit -m "CI: Update model"
-          git push
+          git commit -m "CI: Update Space content"
+          git push --force space main
